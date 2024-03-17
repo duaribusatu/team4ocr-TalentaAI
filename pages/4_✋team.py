@@ -10,15 +10,15 @@ st.text("")
 
 # ----mentor section----
 with st.container():
-    st.subheader("mentor")
+    st.subheader("Mentor")
     col1, col2, col3 = st.columns(3)
     
     with col2:
-        st.image("D:\Talenta AI - OCR Web\cat3.jpeg", use_column_width="none", caption='Mentor')
+        st.image("D:\Talenta AI - OCR Web\image\cat3.jpeg", use_column_width="none", caption='Mentor')
 
 # ----team AI section----
 with st.container():
-    st.subheader("team AI")
+    st.subheader("Team AI")
     col1, col2, col3 = st.columns(3)
     with col1:
         st.image("D:\Talenta AI - OCR Web\image\cat1.jpeg", use_column_width="always", caption='Dandi Septiandi - Team 4 AI')
@@ -29,22 +29,22 @@ with st.container():
 
 # ----team data section----
 with st.container():
-    st.subheader("team Data")
+    st.subheader("Team Data")
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.image("D:\Talenta AI - OCR Web\cat1.jpeg", use_column_width="always", caption='Team 4 Data')
+        st.image("D:\Talenta AI - OCR Web\image\cat1.jpeg", use_column_width="always", caption='Team 4 Data')
     with col2:
-        st.image("D:\Talenta AI - OCR Web\cat2.jpeg", use_column_width="always", caption='Team 4 Data')
+        st.image("D:\Talenta AI - OCR Web\image\cat2.jpeg", use_column_width="always", caption='Team 4 Data')
     with col3:
-        st.image("D:\Talenta AI - OCR Web\cat3.jpeg", use_column_width="always", caption='Team 4 Data')
+        st.image("D:\Talenta AI - OCR Web\image\cat3.jpeg", use_column_width="always", caption='Team 4 Data')
 
 # ----team cyber section----
 with st.container():
-    st.subheader("team Cybersecurity")
+    st.subheader("Team Cybersecurity")
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.image("D:\Talenta AI - OCR Web\cat1.jpeg", use_column_width="always", caption='Team 4 Cyber')
+        st.image("D:\Talenta AI - OCR Web\image\cat1.jpeg", use_column_width="always", caption='Team 4 Cyber')
     with col2:
-        st.image("D:\Talenta AI - OCR Web\cat2.jpeg", use_column_width="always", caption='Team 4 Cyber')
+        st.image("D:\Talenta AI - OCR Web\image\cat2.jpeg", use_column_width="always", caption='Team 4 Cyber')
     with col3:
-        st.image("D:\Talenta AI - OCR Web\cat3.jpeg", use_column_width="always", caption='Team 4 Cyber')
+        st.image("D:\Talenta AI - OCR Web\image\cat3.jpeg", use_column_width="always", caption='Team 4 Cyber')

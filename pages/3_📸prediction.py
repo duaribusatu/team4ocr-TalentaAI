@@ -1,107 +1,99 @@
 import streamlit as st
 import requests
-import os
 import pandas as pd
+import os
+import dotenv
+from dotenv import load_dotenv
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
-from PIL import Image, ImageDraw 
-from PIL import Image 
+from PIL import Image
 from io import BytesIO
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
+from scripts.auth import azure_ad_auth
 
-#----endpoint----
-def scoring(image_bytes) -> pd.DataFrame:
-    subscription_key = "92868981c15942fa9e73ecc69a1cc88c"
-    endpoint = "https://yenirsm.cognitiveservices.azure.com/"
-    
-    model_id = "coba2"
-    #az_key = st.secrets["92868981c15942fa9e73ecc69a1cc88c"]
-    document_analysis_client = DocumentAnalysisClient(
-        endpoint=endpoint, credential=AzureKeyCredential(subscription_key)
-        )
-    analysis = document_analysis_client.begin_analyze_document(model_id, image_bytes)
-    result = analysis.result()
-    #computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
+# Load environment variables
+ENV = dotenv.dotenv_values("key.env")
 
-    for idx, document in enumerate(result.documents):
-        print("--------Analyzing document #{}--------".format(idx + 1))
-        print("Document has type {}".format(document.doc_type))
-        print("Document has confidence {}".format(document.confidence))
-        print("Document was analyzed by model with ID {}".format(result.model_id))
-        for name, field in document.fields.items():
-            field_value = field.value if field.value else field.content
-            print("......found field of type '{}' with value '{}' and with confidence {}".format(field.value_type, field_value, field.confidence))
-
-    # iterate over tables, lines, and selection marks on each page
-    for page in result.pages:
-        print("\nLines found on page {}".format(page.page_number))
-        for line in page.lines:
-            print("...Line '{}'".format(line.content.encode('utf-8')))
-        for word in page.words:
-            print(
-                "...Word '{}' has a confidence of {}".format(
-                    word.content.encode('utf-8'), word.confidence
-                )
-            )
-        for selection_mark in page.selection_marks:
-            print(
-                "...Selection mark is '{}' and has a confidence of {}".format(
-                    selection_mark.state, selection_mark.confidence
-                )
-            )
-
-    for i, table in enumerate(result.tables):
-        print("\nTable {} can be found on page:".format(i + 1))
-        for region in table.bounding_regions:
-            print("...{}".format(i + 1, region.page_number))
-            
-        for cell in table.cells:
-            print(
-                "...Cell[{}][{}] has content '{}'".format(
-                    cell.row_index, cell.column_index, cell.content.encode('utf-8')
-                )
-            )
-    print("-----------------------------------")
-
-#----title----
-st.title("Prediction Nutrition of a Food😭")
-st.write(
-    "This app uses Azure's Computer Vision service to analyze an image and provide information from image"
+# Azure Cognitive Services credentials
+subscription_key = ENV["AZURE_KEY"]
+endpoint = ENV["ENDPOINT"]
+model_id = ENV["MODEL"]
+document_analysis_client = DocumentAnalysisClient(
+    endpoint=endpoint, credential=AzureKeyCredential(subscription_key)
 )
 
-#----image upload----
-uploaded_image = st.file_uploader(label = "Upload your image here", type=['png','jpg','jpeg'])
+# Function to analyze image using Azure OCR
+def analyze_image(image_bytes):
+    analysis = document_analysis_client.begin_analyze_document(model_id, image_bytes)
+    result = analysis.result()
+    return result
+
+# Function to display analysis result in a DataFrame
+def display_analysis(analysis):
+    table_data = []
+    for i, table in enumerate(analysis.tables):
+        num_rows = max(cell.row_index for cell in table.cells) + 1
+        num_columns = max(cell.column_index for cell in table.cells) + 1
+
+        table_rows = [["" for _ in range(num_columns)] for _ in range(num_rows)]
+
+        for cell in table.cells:
+            table_rows[cell.row_index][cell.column_index] = cell.content
+
+        table_data.extend(table_rows)
+
+    # Define column headers based on the number of columns
+    columns = ["Nutrisi", "%AKG", "%DV", ...]  # Update with actual column names
+
+    df = pd.DataFrame(table_data, columns=columns)
+    return df
+
+# Streamlit app
+st.title("Prediction Nutrition of a Food😭")
+st.write("This app uses Azure's Computer Vision service to analyze an image and provide information from the image")
+
+# Image upload
+email, username, full_name = azure_ad_auth('home', False)
+if email is None:
+    st.stop()
+
+uploaded_image = st.file_uploader(label="Upload your image here", type=['png', 'jpg', 'jpeg'])
 url = st.text_input("Or enter Image URL: ")
 
 if uploaded_image is not None:
-    input_image = uploaded_image.getvalue() #read image
+    input_image = uploaded_image.read()  # read image
     st.image(input_image, caption="Uploaded Image.", use_column_width=True)
     st.write("")
-    st.write("AI at work, sabar ya!")
-    analysis = scoring(input_image)
+    with st.spinner("AI sedang bekerja, sabar ya!"):
+        analysis_result = analyze_image(input_image)
+    df = display_analysis(analysis_result)
+    st.write("Analysis Result:")
+    st.dataframe(df)
 
 elif url:
     try:
         response = requests.get(url)
         response.raise_for_status()
-        
+
         content_type = response.headers.get('Content-Type', '')
         if 'image' in content_type:
             input_image = Image.open(BytesIO(response.content))
             st.image(input_image, caption='Image from URL.', use_column_width=True)
-            st.write("")
-            st.write("AI at work, sabar ya!")
-            analysis = scoring(input_image)
+            with st.spinner("AI at work, sabar ya!"):
+                analysis_result = analyze_image(response.content)
+            df = display_analysis(analysis_result)
+            st.write("Analysis Result:")
+            st.dataframe(df)
         else:
             st.error("The URL does not point to a valid image. Content-Type received was " + content_type)
-            
+
     except requests.RequestException as e:
         st.error(f"Failed to fetch image due to request exception: {str(e)}")
-        
+
     except requests.HTTPError as e:
         st.error(f"HTTP Error occurred: {str(e)}")
-        
+
     except Exception as e:
         st.error(f"An unexpected error occurred: {str(e)}")
 
