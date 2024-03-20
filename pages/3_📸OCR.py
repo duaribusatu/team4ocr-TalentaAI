@@ -50,7 +50,7 @@ def display_analysis(analysis):
     return df
 
 # Streamlit app
-st.title("Prediction Nutrition of a Food😭")
+st.title("Analyze Nutrition of ur Food🍪")
 st.write("This app uses Azure's Computer Vision service to analyze an image and provide information from the image")
 
 # Image upload

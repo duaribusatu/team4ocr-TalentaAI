@@ -39,8 +39,9 @@ with st.container():
                  Menggunakan teknologi OCR untuk memprediksi kandungan nutrisi suatu makanan dari label nutrisinya
                  """)
         st.write("##")
-        st.page_link("pages/3_📸prediction.py", label="Predict your Food Now", icon="🔥")
-    
+        st.page_link("pages/3_📸OCR.py", label="Analyze your Food Now (Image)", icon="🔥")
+        st.page_link("pages/2_🎲recipe.py", label="Analyze your Food Now (Recipe)", icon="🧀")
+
     with right_column:
         st.write("##")
         st.write("##")

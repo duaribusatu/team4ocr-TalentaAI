@@ -23,6 +23,10 @@ def azure_ad_auth(key, show_loggedin_page, allowed_users=[]):
         html_id="html_id_for_button", # Optional, defaults to None. Corresponds to HTML id.
         key=key # Optional if only a single instance is needed
     )
+    uid = None
+    if login_token:
+        uid = login_token.get('account', {}).get('homeAccountId', None)
+    print(uid)
 
     account_warning = st.empty()
     if show_loggedin_page:
@@ -45,7 +49,7 @@ def azure_ad_auth(key, show_loggedin_page, allowed_users=[]):
         if success:
             account_warning.empty()
             st.success(f'You have been authenticated as **"{full_name} ({email})"** using Microsoft AD')
-            return email, username, full_name
+            return email, username, full_name, uid
     
     elif success == False:
         st.warning(f'You are not authenticated using Microsoft AD.')
@@ -55,7 +59,7 @@ def azure_ad_auth(key, show_loggedin_page, allowed_users=[]):
             account_warning.empty()
             st.error(f'**"{full_name}"** does not have access to this project!')
             st.info(f'Why are you viewing this page? Because this feature may be exclusive to only a few users.')
-            return None
+            return None, None, None, None
         
         return email, username, full_name
     
