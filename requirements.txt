@@ -1,0 +1,1 @@
+msal-streamlit-authentication==1.0.9
