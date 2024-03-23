@@ -1,1 +1,2 @@
 msal-streamlit-authentication==1.0.9
+azure-search-documents==11.2.0
