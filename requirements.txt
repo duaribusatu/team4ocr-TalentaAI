@@ -1,7 +1,7 @@
 msal-streamlit-authentication==1.0.9
 azure-search-documents==11.2.0
 scikit-learn==0.24.2
-streamlit>=0.69
+streamlit==1.28.2
 streamlit-lottie>=0.0.5
 azure-core
 azure-identity
