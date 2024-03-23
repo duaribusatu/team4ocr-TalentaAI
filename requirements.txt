@@ -6,3 +6,4 @@ scikit-learn==0.24.2
 streamlit-lottie>=0.0.5
 azure-core
 azure-identity
+requests
