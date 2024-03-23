@@ -1,12 +1,12 @@
 import streamlit as st 
-import pandas as pd 
-import numpy as np
-import seaborn as sns
+#import pandas as pd 
+#import numpy as np
+#import seaborn as sns
 import numpy as np 
 import requests
 from streamlit_lottie import st_lottie
 from sklearn.datasets import load_wine
-from PIL import Image 
+#from PIL import Image 
 
 #----start----
 st.set_page_config(
