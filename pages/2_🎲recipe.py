@@ -10,10 +10,8 @@ from scripts.auth import azure_ad_auth
 st.title("Analyze ur Recipe")
 
 # Auth
-auth_result = azure_ad_auth('home', True)
-if auth_result:
-    email, username, full_name, uid = auth_result
-    st.text(f'email, username, full_name, uid: {(email, username, full_name, uid)}')
+email, username, full_name, uid = azure_ad_auth('home', True)
+st.text(f'email, username, full_name, uid: {(email, username, full_name, uid)}')
 
 # Search Engine
 service_endpoint = 'https://team4search.search.windows.net'
