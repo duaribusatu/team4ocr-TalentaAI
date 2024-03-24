@@ -61,6 +61,6 @@ def azure_ad_auth(key, show_loggedin_page, allowed_users=[]):
             st.info(f'Why are you viewing this page? Because this feature may be exclusive to only a few users.')
             return None, None, None, None
         
-        return email, username, full_name
+        return email, username, full_name, uid
     
-    return email, username, full_name
+    return email, username, full_name, uid
