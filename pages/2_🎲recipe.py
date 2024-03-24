@@ -94,10 +94,49 @@ df = st.session_state.get('ingredients_result', None)
 if df is not None:
     st.dataframe(df)
     df_sum = df.select_dtypes(float).sum().to_frame().transpose()
+    df_sum = df_sum[['Lemak', 'VitaminB1', 'VitaminB2', 'VitaminA', 'Besi', 'Karbohidrat', 'Serat', 'VitaminB3', 'Energi', 'VitaminC', 'Garam', 'Protein']]
+    df_sum['user_name'] = full_name
+    df_sum['email'] = email
     st.dataframe(df_sum)
 
-submit = st.button('Submit to SQL')
+    st.session_state['df_sum'] = df_sum
+
+df_sum: pd.DataFrame = st.session_state.get('df_sum', None)
+submit = st.button('Submit to SQL', disabled=df_sum is None)
 if submit:
-    pass
-    # TODO: insert to SQL database 
-    # https://learn.microsoft.com/en-us/sql/machine-learning/data-exploration/python-dataframe-sql-server?view=sql-server-ver16
+    import pyodbc
+
+    # Mengkonfigurasi koneksi ke Azure SQL Server
+    server = 'serversqlteam4.database.windows.net'
+    database = 'databasesqlteam4'
+    username = 'team4'
+    password = 'Passsql123!'
+    driver = '{ODBC Driver 18 for SQL Server}'
+    
+    # Membuat koneksi
+    conn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    try:
+        # Masukkan data yang ingin di insert/ditambahkan ke sql database
+        data_to_insert = [
+            # (2, 2, 1.5, 1.5, 2, 1.5, 1, 1.5, 1, 1, 2, 1.5, 'aldi', 'aldie@mail'),
+            # (1, 3, 1.5, 1.5, 2, 1.5, 1, 1.5, 1, 1, 2, 1.5, 'taher', 'taher@mail'),
+            # (2, 1, 3, 1.5, 2, 1.5, 1, 1.5, 1, 1, 2, 1.5, 'nugroho', 'nugroho@mail')
+        ]
+        data_to_insert = df_sum.values.tolist()
+
+        # Jalankan erintah SQL untuk memasukkan data di sini
+        cursor = conn.cursor()
+        for data in data_to_insert:
+            cursor.execute("INSERT INTO [dbo].[OutputMLINGREDIENT] (Lemak, VitaminB1, VitaminB2, VitaminA, Besi, Karbohidrat, Serat, VitaminB3, Energi, VitaminC, Garam, Protein, user_name, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
+
+        # Tes apakah data berhasil di insert
+        conn.commit()
+        st.success("Data berhasil dimasukkan ke dalam tabel.")
+
+    except Exception as e:
+        # Tangani kesalahan jika terjadi eror
+        st.error("Terjadi kesalahan saat memasukkan data:", str(e))
+
+    finally:
+        # Tutup koneksi
+        conn.close()

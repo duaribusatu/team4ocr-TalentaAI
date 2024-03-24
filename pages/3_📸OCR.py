@@ -4,7 +4,6 @@ import pandas as pd
 import os
 import dotenv
 from dotenv import load_dotenv
-from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
 from PIL import Image
 from io import BytesIO
