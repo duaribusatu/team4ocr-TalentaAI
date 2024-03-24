@@ -1,1 +1,15 @@
+<<<<<<< HEAD
 msal-streamlit-authentication==1.0.9
+=======
+msal-streamlit-authentication==1.0.9
+azure-ai-formrecognizer
+streamlit==1.32.2
+azure-search-documents==11.2.0
+scikit-learn==0.24.2
+streamlit-lottie>=0.0.5
+azure-core
+azure-identity
+requests==2.28.1
+urllib3==1.26.12
+dotenv==1.0.1
+>>>>>>> 0a155682328613ea443a55556195ebb407c869fb
