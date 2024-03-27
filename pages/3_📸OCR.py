@@ -31,9 +31,11 @@ def analyze_image(image_bytes):
 # Function to display analysis result in a DataFrame
 def display_analysis(analysis):
     table_data = []
+    max_columns = 0
     for i, table in enumerate(analysis.tables):
         num_rows = max(cell.row_index for cell in table.cells) + 1
         num_columns = max(cell.column_index for cell in table.cells) + 1
+        max_columns = max(max_columns, num_columns)
 
         table_rows = [["" for _ in range(num_columns)] for _ in range(num_rows)]
 
@@ -43,7 +45,7 @@ def display_analysis(analysis):
         table_data.extend(table_rows)
 
     # Define column headers based on the number of columns
-    columns = ["Nutrisi", "%AKG", "%DV", ...]  # Update with actual column names
+    columns = ["Nama", "Berat", "%AKG"] + [f"Column_{i}" for i in range (3, max_columns)]  # Update with actual column names
 
     df = pd.DataFrame(table_data, columns=columns)
     return df
