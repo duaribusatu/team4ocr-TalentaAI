@@ -31,7 +31,7 @@ with st.container():
     with left_column:
         st.subheader("hi, we are _team 4_ :wave:")
         st.write("##")
-        st.title(":orange[_Capture Food:_] ur personal nutrition scanner 🍧")
+        st.title(":orange[_NutriVision:_] ur personal nutrition scanner 🍧")
         st.write("""
                  Discover the Nutritional Secrets of Your Food with our Nutrition Checker🥩
                                   
